@@ -1,14 +1,23 @@
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%
+    Map<String, String> errorMessages = (Map<String, String>) request.getAttribute("errorMessages");
+    if(errorMessages == null) {
+        errorMessages = new HashMap<>();
+    }
+%>
 <h1>Зареєструватись на сайті</h1>
 <div class="row">
-    <form class="col s12">
+    <form class="col s12" method="post">
         <div class="row">
             <div class="input-field col s6">
                 <i class="material-icons prefix">account_circle</i>
-                <input id="icon_prefix" type="text" name="user-name" >
+                <input id="icon_prefix" type="text" name="user-name"
+                       class="<%= (errorMessages.containsKey("user-name")) ? "invalid" : "" %>" >
                 <label for="icon_prefix">П.І.Б.</label>
                 <span class="helper-text"
-                      data-error="Це необхідне поле"
+                      data-error="<%=errorMessages.getOrDefault("user-name", "") %>"
                       data-success="Правильно">Прізвище, ім'я, по-батькові</span>
             </div>
             <div class="input-field col s6">
@@ -39,11 +48,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="input-field col s6">
-
+            <div class="file-field input-field col s6">
+                <div class="btn indigo">
+                    <i class="material-icons">photo</i>
+                    <input type="file">
+                </div>
+                <div class="file-path-wrapper">
+                    <input class="file-path validate" type="text" placeholder="Аватарка">
+                </div>
             </div>
             <div class="input-field col s6">
-                <button class="btn indigo right">Реєстрація</button>
+                <button class="btn indigo right"><i class="material-icons left">task_alt</i>Реєстрація</button>
             </div>
         </div>
     </form>
