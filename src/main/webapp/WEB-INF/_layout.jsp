@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="<%=contextPath%>/css/site.css" />
     <title>Java web</title>
 </head>
-<body>
+<body style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh">
 <nav>
     <div class="nav-wrapper indigo">
         <a href="#" class="brand-logo left">Logo</a>
@@ -24,11 +24,14 @@
             <li><a href="<%=contextPath%>/ioc"><i class="material-icons">sync</i>IoC</a></li>
             <li><a href="#">Components</a></li>
             <li><a href="#">JavaScript</a></li>
+            <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
         </ul>
     </div>
 </nav>
+<div class="container">
     <jsp:include page="<%= pageBody %>" />
-
+</div>
+<div style="flex: 1 1 auto"></div>
 <footer class="page-footer indigo">
     <div class="container">
         <div class="row">
