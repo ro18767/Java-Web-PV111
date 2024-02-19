@@ -9,7 +9,7 @@
 %>
 <h1>Зареєструватись на сайті</h1>
 <div class="row">
-    <form class="col s12" method="post">
+    <form class="col s12" method="post" enctype="multipart/form-data">
         <div class="row">
             <div class="input-field col s6">
                 <i class="material-icons prefix">account_circle</i>
@@ -54,7 +54,7 @@
             <div class="file-field input-field col s6">
                 <div class="btn indigo">
                     <i class="material-icons">photo</i>
-                    <input type="file">
+                    <input type="file" name="user-avatar">
                 </div>
                 <div class="file-path-wrapper">
                     <input class="file-path validate" type="text" placeholder="Аватарка">

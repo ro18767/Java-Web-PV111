@@ -17,7 +17,7 @@ public class HomeServlet extends HttpServlet {
                 .forward(req, resp);
     }
 }
-/*
+/* req.getServletContext().getRealPath("/")
 Сервлет - клас для мережних задач,
 HttpServlet - аналог контролерів у веб-проєктах
 Д.З. Створити веб-проєкт, добитись його запуску
