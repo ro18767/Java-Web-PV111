@@ -33,7 +33,22 @@ public class SignupServlet extends HttpServlet {
         Map<String, String> errorMessages = new HashMap<>() ;
         String userName = req.getParameter( "user-name" ) ;
         if( userName == null || userName.isEmpty() ) {
-            errorMessages.put( "user-name", "Не може бути порожнім" ) ;
+            errorMessages.put( "user-name", "Не може бути порожнім name" ) ;
+        }
+
+        String userPhone = req.getParameter( "user-phone" ) ;
+        if( userPhone == null || userPhone.isEmpty() ) {
+            errorMessages.put( "user-phone", "Не може бути порожнім phone" ) ;
+        }
+
+        String userPassword = req.getParameter( "user-password" ) ;
+        if( userPassword == null || userPassword.isEmpty() ) {
+            errorMessages.put( "user-password", "Не може бути порожнім password" ) ;
+        }
+
+        String userEmail = req.getParameter( "user-email" ) ;
+        if( userEmail == null || userEmail.isEmpty() ) {
+            errorMessages.put( "user-email", "Не може бути порожнім email" ) ;
         }
 
         HttpSession session = req.getSession();
