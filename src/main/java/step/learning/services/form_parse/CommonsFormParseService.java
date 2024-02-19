@@ -61,7 +61,7 @@ public class CommonsFormParseService implements FormParseService {
 
         return new FormParseResult() {
             @Override public Map<String, String> getFields() { return fields; }
-            @Override public Map<String, FileItem> gitFiles() { return files; }
+            @Override public Map<String, FileItem> getFiles() { return files; }
         };
     }
 }

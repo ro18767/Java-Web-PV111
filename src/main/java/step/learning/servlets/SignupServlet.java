@@ -2,6 +2,7 @@ package step.learning.servlets;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.commons.fileupload.FileItem;
 import step.learning.services.form_parse.FormParseResult;
 import step.learning.services.form_parse.FormParseService;
 
@@ -10,10 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Singleton
 public class SignupServlet extends HttpServlet {
@@ -72,6 +75,43 @@ public class SignupServlet extends HttpServlet {
         String userEmail = fields.get( "user-email" ) ;
         if( userEmail == null || userEmail.isEmpty() ) {
             errorMessages.put( "user-email", "Не може бути порожнім email" ) ;
+        }
+
+        if( formParseResult.getFiles().containsKey("user-avatar") ) {
+            // файл опціональний, але якщо є, то перевіряємо
+            // - розширення відповідає дозволеному
+            // - розмір не менший граничного значення
+            // формуємо нове ім'я для файлу та зберігаємо в /upload/avatar
+            FileItem fileItem = formParseResult.getFiles().get("user-avatar");
+            String fileName = fileItem.getName();
+            int dotPosition = fileName.lastIndexOf(".");
+            if( dotPosition == -1 ) {
+                errorMessages.put( "user-avatar", "Файли без розширення не допускаються" ) ;
+            }
+            else {
+                String ext = fileName.substring(dotPosition);
+                // Д.З. Завантаження файла-аватарки:
+                // забезпечити перевірку переданого файлу на допустимість
+                // типу (розширення) за переліком (створити самостійно).
+                // За навності помилок вивести їх в UI (на формі реєстрації)
+                // System.out.println(ext);
+                String savedFilename ;
+                File savedFile ;
+                do {
+                    savedFilename = UUID.randomUUID() + ext;
+                    savedFile = new File(
+                            req.getServletContext().getRealPath("/upload/avatar"),
+                            savedFilename
+                    );
+                } while( savedFile.isFile() ) ;
+
+                try {
+                    fileItem.write( savedFile ) ;
+                }
+                catch (Exception e) {
+                    throw new IOException(e);
+                }
+            }
         }
 
         session.setAttribute( "form-status", errorMessages );
