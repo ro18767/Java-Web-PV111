@@ -18,20 +18,26 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public class SignupServlet extends HttpServlet {
     private final FormParseService formParseService ;
     private final UserDao userDao ;
+    private final Logger logger ;
 
     @Inject
-    public SignupServlet(FormParseService formParseService, UserDao userDao) {
+    public SignupServlet(FormParseService formParseService, UserDao userDao, Logger logger) {
         this.formParseService = formParseService;
         this.userDao = userDao;
+        this.logger = logger;
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        logger.log(Level.WARNING, "Demo warning from Signup" ) ;
+
         HttpSession session = req.getSession();
         Map<String, String> errorMessages = (Map<String, String>) session.getAttribute( "form-status" ) ;
         if( errorMessages != null ) {

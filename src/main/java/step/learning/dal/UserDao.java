@@ -6,17 +6,21 @@ import step.learning.services.kdf.KdfService;
 
 import java.sql.*;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public class UserDao {
     private final KdfService kdfService ;
     private final Connection dbConnection ;
+    private final Logger logger ;
 
-     @Inject
-    public UserDao(KdfService kdfService, Connection dbConnection) {
-        this.kdfService = kdfService;
-        this.dbConnection = dbConnection;
-    }
+    @Inject
+    public UserDao(KdfService kdfService, Connection dbConnection, Logger logger) {
+         this.kdfService = kdfService;
+         this.dbConnection = dbConnection;
+         this.logger = logger;
+     }
 
     public boolean signupUser(String userName, String userPhone, String userPassword, String userEmail, String savedFilename) {
         String sql = "INSERT INTO Users(name,phone,salt,dk,email,avatar) VALUES(?,?,?,?,?,?)" ;
@@ -34,8 +38,7 @@ public class UserDao {
             return true ;
         }
         catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-            System.out.println(sql);
+            logger.log(Level.SEVERE, ex.getMessage() + " -- " + sql );
             return false ;
         }
     }
@@ -49,24 +52,13 @@ public class UserDao {
                 "dk     CHAR(32)     NOT NULL," +
                 "email  VARCHAR(128) NOT NULL," +
                 "avatar VARCHAR(64)  NULL" +
-            ")ENGINE = InnoDB, DEFAULT CHARSET = utf8mb4";
-        // try {
-        //     Driver mySqlDriver = new com.mysql.cj.jdbc.Driver() ;
-        //     DriverManager.registerDriver( mySqlDriver ) ;
-        //     String connectionString = "jdbc:mysql://localhost:3306/java_111" +
-        //             "?useUnicode=true&characterEncoding=UTF-8" ;
-        //     dbConnection = DriverManager.getConnection( connectionString, "root", "" ) ;
-        // }
-        // catch (SQLException e) {
-        //     throw new RuntimeException(e);
-        // }
+            ") ENGINE = InnoDB, DEFAULT CHARSET = utf8mb4";
         try(Statement statement = dbConnection.createStatement()) {
             statement.executeUpdate( sql ) ;
             return true ;
         }
         catch (SQLException ex) {
-            System.err.println(ex.getMessage());
-            System.out.println(sql);
+            logger.log(Level.SEVERE, ex.getMessage() + " -- " + sql );
             return false ;
         }
     }
