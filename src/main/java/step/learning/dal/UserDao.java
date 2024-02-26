@@ -2,6 +2,7 @@ package step.learning.dal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import step.learning.entity.User;
 import step.learning.services.kdf.KdfService;
 
 import java.sql.*;
@@ -20,8 +21,12 @@ public class UserDao {
          this.kdfService = kdfService;
          this.dbConnection = dbConnection;
          this.logger = logger;
-     }
+    }
 
+    public User getUserByCredentials(String email, String password) {
+
+        return null ;
+    }
     public boolean signupUser(String userName, String userPhone, String userPassword, String userEmail, String savedFilename) {
         String sql = "INSERT INTO Users(name,phone,salt,dk,email,avatar) VALUES(?,?,?,?,?,?)" ;
         try(PreparedStatement prep = dbConnection.prepareStatement(sql)) {

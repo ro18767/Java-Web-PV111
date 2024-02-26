@@ -9,6 +9,7 @@
 <!doctype html>
 <html>
 <head>
+    <meta charset="utf-8"/>
     <!--Import Google Icon Font-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Compiled and minified CSS -->
@@ -24,6 +25,7 @@
             <li><a href="<%=contextPath%>/ioc"><i class="material-icons">sync</i>IoC</a></li>
             <li><a href="#">Components</a></li>
             <li><a href="#">JavaScript</a></li>
+            <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
         </ul>
     </div>
@@ -58,26 +60,30 @@
     </div>
 </footer>
 
-<!-- Modal Trigger -->
-<a class="waves-effect waves-light btn modal-trigger" href="#modal1">Modal</a>
-
 <!-- Modal Structure -->
-<div id="modal1" class="modal">
+<div id="modal-auth" class="modal">
     <div class="modal-content">
-        <h4>Modal Header</h4>
-        <p>A bunch of text</p>
+        <h4>Автентифікація</h4>
+        <div class="row">
+            <div class="input-field col s11">
+                <i class="material-icons prefix">mail</i>
+                <input  id="auth-email" type="email">
+                <label for="auth-email">E-mail</label>
+            </div>
+            <div class="input-field col s11">
+                <i class="material-icons prefix">lock</i>
+                <input  id="auth-password" type="password">
+                <label for="auth-password">Пароль</label>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Agree</a>
+        <button class="modal-close btn-flat grey">Закрити</button>
+        <button id="auth-button" class="btn-flat indigo white-text waves-effect">Вхід</button>
     </div>
 </div>
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var elems = document.querySelectorAll('.modal');
-        M.Modal.init(elems, {});
-    });
-</script>
+    <script src="<%=contextPath%>/js/site.js"></script>
 </body>
 </html>

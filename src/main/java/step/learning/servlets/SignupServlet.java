@@ -36,7 +36,7 @@ public class SignupServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        logger.log(Level.WARNING, "Demo warning from Signup" ) ;
+        // logger.log(Level.WARNING, "Demo warning from Signup" ) ;
 
         HttpSession session = req.getSession();
         Map<String, String> errorMessages = (Map<String, String>) session.getAttribute( "form-status" ) ;
