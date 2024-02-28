@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Singleton
@@ -26,7 +27,7 @@ public class AuthServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-
+        Gson gson = new Gson();
         JsonObject res = new JsonObject() ;
         String email = req.getParameter("email");
         String password = req.getParameter("password");
@@ -52,14 +53,15 @@ public class AuthServlet extends HttpServlet {
             }
             else {
                 res.addProperty("status", "success");
-                JsonObject data = new JsonObject();
-                data.addProperty("email", email);
-                data.addProperty("password", password);
-                res.add("data", data);
+                res.addProperty("message", "Page reload expected");
+                // у сесії зберігаємо дані автентифікації
+                HttpSession session = req.getSession();
+                session.setAttribute("auth-user", user);
+                // res.add("data", gson.toJsonTree(user) );
             }
         }
         resp.getWriter().print(
-            new Gson().toJson(res)
+            gson.toJson(res)
         );
     }
 }

@@ -1,3 +1,4 @@
+<%@ page import="step.learning.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
     String pageBody = (String) request.getAttribute( "page-body" ) ;
@@ -5,6 +6,7 @@
         pageBody = "home.jsp" ;   // default page
     }
     String contextPath = request.getContextPath() ;
+    User user = (User) request.getAttribute("auth-user");
 %>
 <!doctype html>
 <html>
@@ -25,7 +27,13 @@
             <li><a href="<%=contextPath%>/ioc"><i class="material-icons">sync</i>IoC</a></li>
             <li><a href="#">Components</a></li>
             <li><a href="#">JavaScript</a></li>
-            <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
+            <% if(user == null) { %>
+                <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
+            <% } else { %>
+                <li><a href="#"><i class="material-icons">logout</i></a></li>
+            <% } %>
+Д.З. Вивести аватарку користувача після його входу до системи (авторизації)
+За відсутності аватарки в авторизованого користувача - вивести no-photo.png
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
         </ul>
     </div>
@@ -78,8 +86,11 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="modal-close btn-flat grey">Закрити</button>
-        <button id="auth-button" class="btn-flat indigo white-text waves-effect">Вхід</button>
+        <div class="auth-message"></div>
+        <div>
+            <button class="modal-close btn-flat grey">Закрити</button>
+            <button id="auth-button" class="btn-flat indigo white-text waves-effect">Вхід</button>
+        </div>
     </div>
 </div>
     <!-- Compiled and minified JavaScript -->

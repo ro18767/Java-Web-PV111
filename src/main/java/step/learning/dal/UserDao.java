@@ -24,7 +24,21 @@ public class UserDao {
     }
 
     public User getUserByCredentials(String email, String password) {
-
+        String sql = "SELECT * FROM Users u WHERE u.email=?" ;
+        try( PreparedStatement prep = dbConnection.prepareStatement( sql ) ) {
+            prep.setString( 1, email ) ;
+            ResultSet resultSet = prep.executeQuery();
+            if( resultSet.next() ) {
+                String salt = resultSet.getString("salt") ;
+                String dk = resultSet.getString("dk") ;
+                if( kdfService.dk(password, salt).equals( dk ) ) {
+                    return new User( resultSet ) ;
+                }
+            }
+        }
+        catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
         return null ;
     }
     public boolean signupUser(String userName, String userPhone, String userPassword, String userEmail, String savedFilename) {
