@@ -33,7 +33,7 @@ public class DbFilter implements Filter {
                 // connection.isClosed() - не дає правильного результату якщо
                 // був розрив з боку БД (не відключення, а розрив)
                 // надійний варіант - тестовий запит
-                connection.prepareStatement("SELECT 1");
+                connection.createStatement().execute("SELECT 1");
             }
             catch (SQLException ignored) {
                 dbService.closeConnection();
@@ -58,3 +58,12 @@ public class DbFilter implements Filter {
         this.filterConfig = null;
     }
 }
+/*
+Д.З. Створити фільтр, який буде задавати кодування символів
+для request та response усіх запитів
+(див AuthServlet::doGet)
+Поставити фільтр на саме перше місце (кодування не можна змінювати,
+якщо вже відбулись читання чи запис до request / response)
+* Повторити регулярні шаблони, потрібен шаблон
+"усе, окрім запитів на папки /css/, /js/, /upload/, /img/"
+ */
