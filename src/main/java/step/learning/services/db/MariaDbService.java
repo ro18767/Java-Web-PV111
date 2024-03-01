@@ -41,12 +41,6 @@ public class MariaDbService implements DbService {
                         .getAsJsonObject()
                         .getAsJsonObject("db")
                         .getAsJsonObject("MariaDB");
-            }
-            catch (IOException ex) {
-                logger.log( Level.SEVERE, ex.getMessage() );
-                return null ;
-            }
-            try {
                 mySqlDriver = new com.mysql.cj.jdbc.Driver() ;
                 DriverManager.registerDriver( mySqlDriver ) ;
                 String connectionString = String.format( Locale.UK,
@@ -63,8 +57,8 @@ public class MariaDbService implements DbService {
                         dbConfig.get("password").getAsString()
                 ) ;
             }
-            catch (SQLException e) {
-                throw new RuntimeException(e);
+            catch (Exception ex) {
+                logger.log( Level.SEVERE, ex.getMessage() );
             }
         }
         return connection ;
@@ -82,6 +76,7 @@ public class MariaDbService implements DbService {
         catch (SQLException ex) {
             logger.log( Level.WARNING, ex.getMessage() );
         }
+        connection = null;
     }
     private String readStreamToEnd( InputStream inputStream ) throws IOException {
         final byte[] buffer = new byte[32 * 1024];  // 32k

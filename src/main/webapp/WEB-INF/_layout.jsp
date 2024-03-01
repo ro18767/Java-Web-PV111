@@ -32,8 +32,6 @@
             <% } else { %>
                 <li><a href="#"><i class="material-icons">logout</i></a></li>
             <% } %>
-Д.З. Вивести аватарку користувача після його входу до системи (авторизації)
-За відсутності аватарки в авторизованого користувача - вивести no-photo.png
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
         </ul>
     </div>
