@@ -55,4 +55,7 @@ public class AuthFilter implements Filter {
 або) у web.xml
 або) анотацією WebFilter("шлях")
 або) у налаштуваннях IoC (RouterModule) - не забути @Singleton
+--------------------
+Задача - перенести управління підключенням БД до фільтрів (з IoC)
+- Створюємо сервіс DbService
  */
