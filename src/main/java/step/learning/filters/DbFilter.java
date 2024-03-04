@@ -67,3 +67,7 @@ public class DbFilter implements Filter {
 * Повторити регулярні шаблони, потрібен шаблон
 "усе, окрім запитів на папки /css/, /js/, /upload/, /img/"
  */
+/*
+        filterRegex( "^/(?!image/.*).*$" ).through( DbCheckFilter.class ) ;  // ^/(?!ignoreme|ignoreme2|ignoremeN)([a-z0-9]+)$
+        filterRegex( "^/(?!image/.*).*(?<!\\.png|\\.jpg)$" )
+ */

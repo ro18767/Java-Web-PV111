@@ -25,12 +25,12 @@
         <a href="#" class="brand-logo left">Logo</a>
         <ul id="nav-mobile" class="right ">
             <li><a href="<%=contextPath%>/ioc"><i class="material-icons">sync</i>IoC</a></li>
-            <li><a href="#">Components</a></li>
+            <li><a href="<%=contextPath%>/news">Новини</a></li>
             <li><a href="#">JavaScript</a></li>
             <% if(user == null) { %>
                 <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
             <% } else { %>
-                <li><a href="#"><i class="material-icons">logout</i></a></li>
+                <li><a href="?logout"><i class="material-icons">logout</i></a></li>
             <% } %>
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
         </ul>

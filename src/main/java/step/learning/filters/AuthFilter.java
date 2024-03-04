@@ -6,6 +6,7 @@ import step.learning.entity.User;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -32,6 +33,12 @@ public class AuthFilter implements Filter {
         // прямий хід: запит -> view (jsp)
         HttpServletRequest req = (HttpServletRequest) request;
         HttpSession session = req.getSession();
+        // Перевіряємо умову виходу
+        if( req.getParameterMap().containsKey("logout") ) {
+            session.removeAttribute("auth-user");
+            ((HttpServletResponse)response).sendRedirect( req.getRequestURI() );
+            return ;
+        }
         User user = (User) session.getAttribute("auth-user");
         if( user != null ) {
             req.setAttribute("auth-user", user);
