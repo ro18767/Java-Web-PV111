@@ -60,9 +60,7 @@ public class AuthServlet extends HttpServlet {
                 // res.add("data", gson.toJsonTree(user) );
             }
         }
-        resp.getWriter().print(
-            gson.toJson(res)
-        );
+        resp.getWriter().print( gson.toJson(res) );
     }
 }
 /*

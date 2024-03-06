@@ -4,9 +4,86 @@ document.addEventListener('DOMContentLoaded', function() {
         onCloseEnd: onAuthModalClosed
     });
 
+    Date.prototype.toSqlString = function() {
+        return `${this.getFullYear()}-${this.getMonth().toString().padStart(2, '0')}-${this.getDate().toString().padStart(2, '0')}`;
+    }
+
     const authButton = document.getElementById("auth-button");
     if(authButton) authButton.addEventListener('click', authButtonClick);
+
+    const newsSubmitButton = document.getElementById("news-submit");
+    if(newsSubmitButton) newsSubmitButton.addEventListener('click', newsSubmitClick);
 });
+function newsSubmitClick() {   // hoisting - "підняття коду"
+    const newsTitle = document.getElementById("news-title");
+    if(!newsTitle) throw "Element #news-title not found" ;
+    const newsDate = document.getElementById("news-date");
+    if(!newsDate) throw "Element #news-date not found" ;
+    const newsSpoiler = document.getElementById("news-spoiler");
+    if(!newsSpoiler) throw "Element #news-spoiler not found" ;
+    const newsText = document.getElementById("news-text");
+    if(!newsText) throw "Element #news-text not found" ;
+    const newsFile = document.getElementById("news-file");
+    if(!newsFile) throw "Element #news-file not found" ;
+
+    let isFormValid = true ;
+
+    const title = newsTitle.value.trim() ;
+    if( title.length === 0 ) {
+        newsTitle.classList.add("invalid");
+        isFormValid = false;
+    }
+    else {
+        newsTitle.classList.remove("invalid");
+    }
+
+    if(!newsDate.value) {
+        newsDate.value = new Date().toSqlString();
+    }
+
+    const spoiler = newsSpoiler.value.trim() ;
+    if( spoiler.length === 0 ) {
+        newsSpoiler.classList.add("invalid");
+        isFormValid = false;
+    }
+    else {
+        newsSpoiler.classList.remove("invalid");
+    }
+
+    const text = newsText.value.trim() ;
+    if( text.length === 0 ) {
+        newsText.classList.add("invalid");
+        isFormValid = false;
+    }
+    else {
+        newsText.classList.remove("invalid");
+    }
+
+    if(newsFile.files.length === 0) {
+        document.getElementById("news-file-path").classList.add("invalid");
+        isFormValid = false;
+    }
+    if( isFormValid ) {  // надсилаємо дані
+        const formData = new FormData();
+        formData.append("news-title", title);
+        formData.append("news-date", newsDate.value);
+        formData.append("news-spoiler", spoiler);
+        formData.append("news-text", text);
+        formData.append("news-file", newsFile.files[0]);
+        const appContext = window.location.pathname.split('/')[1] ;
+        fetch(`/${appContext}/news`,{
+            method: 'POST',
+            body: formData
+        }).then(r => r.json()).then(j => {
+            if( j.status !== "success" ) {
+                console.log('OK')
+            }
+            else {
+                console.log('NO')
+            }
+        }) ;
+    }
+}
 function getAuthElements() {
     const authEmailInput = document.getElementById("auth-email");
     if( ! authEmailInput) throw "Element '#auth-email' not found" ;

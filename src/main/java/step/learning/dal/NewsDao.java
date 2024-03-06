@@ -2,6 +2,7 @@ package step.learning.dal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import step.learning.entity.News;
 import step.learning.services.db.DbService;
 
 import java.sql.SQLException;
@@ -18,6 +19,12 @@ public class NewsDao {
     public NewsDao(DbService dbService, Logger logger) {
         this.dbService = dbService;
         this.logger = logger;
+    }
+
+    public boolean addNews(News news) {
+        String sql = "INSERT INTO News(id, title, spoiler, `text`, image_url, created_dt)" +
+                " VALUES( UUID(), ?, ?, ?, ?, ?)";
+        return true ;
     }
 
     public boolean installTable() {
