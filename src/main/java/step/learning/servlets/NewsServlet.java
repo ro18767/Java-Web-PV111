@@ -42,6 +42,7 @@ public class NewsServlet  extends HttpServlet {
             newsDao.installTable()
                 ? "Success"
                 : "Error" ) ;
+        req.setAttribute( "news", newsDao.getAll() ) ;
         req.setAttribute( "page-body", "news.jsp" ) ;
         req.getRequestDispatcher( "WEB-INF/_layout.jsp" ).forward(req, resp);
     }

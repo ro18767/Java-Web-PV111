@@ -1,5 +1,35 @@
+<%@ page import="step.learning.entity.User" %>
+<%@ page import="step.learning.entity.News" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%
+    String contextPath = request.getContextPath() ;
+    User user = (User) request.getAttribute("auth-user");
+    List<News> news = (List<News>) request.getAttribute("news");
+%>
 <h1>Новини</h1>
+<% for(News n : news) { %>
+<div class="col s12 m7">
+    <div class="card horizontal">
+        <div class="card-image" style="flex: 1">
+            <img src="<%=contextPath%>/upload/news/<%=n.getImageUrl()%>" alt="img" />
+        </div>
+        <div class="card-stacked" style="flex: 2">
+            <div class="card-content">
+                <h5><%=n.getTitle()%></h5>
+                <p><%=n.getCreateDt()%></p>
+                <small>
+                    <%=n.getSpoiler()%>
+                </small>
+            </div>
+            <div class="card-action">
+                <a href="#">читати детальніше...</a>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
 <p>
     Контроль таблиці: <%= request.getAttribute( "create-status" ) %>
 </p>

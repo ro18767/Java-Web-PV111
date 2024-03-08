@@ -75,7 +75,7 @@ function newsSubmitClick() {   // hoisting - "підняття коду"
             method: 'POST',
             body: formData
         }).then(r => r.json()).then(j => {
-            if( j.status !== "success" ) {
+            if( j.status === "success" ) {
                 console.log('OK')
             }
             else {
