@@ -44,9 +44,15 @@ public class NewsServlet  extends HttpServlet {
                 : "Error" ) ;
         req.setAttribute( "news", newsDao.getAll() ) ;
         req.setAttribute( "page-body", "news.jsp" ) ;
-        req.getRequestDispatcher( "WEB-INF/_layout.jsp" ).forward(req, resp);
+        req.getRequestDispatcher( "/WEB-INF/_layout.jsp" ).forward(req, resp);
     }
-
+/*
+Д.З. Розширити таблицю News, додати посилання на автора (користувача)
+який її опублікував. Реалізувати передачу ID авторизованого
+користувача до бекенду, пересвідчитись у тому, що ці дані потрапляють
+до БД.
+* У картку новин додати відомості про автора (e-mail або name або інші дані)
+ */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");

@@ -20,7 +20,7 @@ public class RouterModule extends ServletModule {
         serve("/"      ).with( HomeServlet.class    ) ;
         serve("/auth"  ).with( AuthServlet.class    ) ;
         serve("/ioc"   ).with( IocServlet.class     ) ;
-        serve("/news"  ).with( NewsServlet.class    ) ;
+        serve("/news").with( NewsServlet.class    ) ;
         serve("/signup").with( SignupServlet.class  ) ;
     }
 }

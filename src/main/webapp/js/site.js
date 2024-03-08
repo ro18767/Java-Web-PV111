@@ -13,7 +13,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const newsSubmitButton = document.getElementById("news-submit");
     if(newsSubmitButton) newsSubmitButton.addEventListener('click', newsSubmitClick);
+
+    const newsImgFileInput = document.getElementById("news-file");
+    if(newsImgFileInput) newsImgFileInput.onchange = newsImgChange;
 });
+function newsImgChange(e) {
+    const [file] = e.target.files;
+    if(file) {
+        document.getElementById("news-image-preview").src =
+            URL.createObjectURL(file);
+    }
+    else {
+        const appContext = window.location.pathname.split('/')[1] ;
+        document.getElementById("news-image-preview").src = `/${appContext}/upload/news/no-image.jpg`;
+    }
+}
 function newsSubmitClick() {   // hoisting - "підняття коду"
     const newsTitle = document.getElementById("news-title");
     if(!newsTitle) throw "Element #news-title not found" ;
