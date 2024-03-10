@@ -57,7 +57,7 @@
                     <input type="file" name="user-avatar">
                 </div>
                 <div class="file-path-wrapper">
-                    <input class="file-path validate" type="text" placeholder="Аватарка">
+                    <input class="file-path validate <%= (errorMessages.containsKey("user-email")) ? "invalid" : "" %>" type="text" placeholder="Аватарка">
                 </div>
             </div>
             <div class="input-field col s6">

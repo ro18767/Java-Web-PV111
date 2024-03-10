@@ -1,4 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%
+    String code = (String) request.getAttribute("gen-hash");
+    String hash = (String) request.getAttribute("gen-code");
+%>
 <h1>Інверсія управління у веб-проєкті</h1>
 <p>
     Передача управління життєвим циклом (CRUD) об'єктів до спеціального
@@ -32,4 +36,14 @@
     Налаштовуємо модуль маршрутизації.
     З усіх сервлетів знімаємо анотацію "WebServlet" і
     додаємо анотацію Singleton
+</p>
+<p>code:
+    <code>
+        <%=code%>
+    </code>
+</p>
+<p>hash:
+    <code>
+        <%=hash%>
+    </code>
 </p>

@@ -90,7 +90,7 @@ public class SignupServlet extends HttpServlet {
             errorMessages.put( "user-email", "Не може бути порожнім email" ) ;
             isValid = false ;
         }
-        String savedFilename = null;
+        String savedFilename = "";
         if( formParseResult.getFiles().containsKey("user-avatar") ) {
             // файл опціональний, але якщо є, то перевіряємо
             // - розширення відповідає дозволеному
@@ -98,8 +98,12 @@ public class SignupServlet extends HttpServlet {
             // формуємо нове ім'я для файлу та зберігаємо в /upload/avatar
             FileItem fileItem = formParseResult.getFiles().get("user-avatar");
             String fileName = fileItem.getName();
+
             int dotPosition = fileName.lastIndexOf(".");
-            if( dotPosition == -1 ) {
+            if(fileName == "") {
+
+            }
+            else if( dotPosition == -1 ) {
                 errorMessages.put( "user-avatar", "Файли без розширення не допускаються" ) ;
                 isValid = false ;
             }
