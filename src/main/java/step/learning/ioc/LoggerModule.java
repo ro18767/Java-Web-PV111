@@ -5,7 +5,9 @@ import com.google.inject.AbstractModule;
 // import java.io.IOException;
 // import java.io.InputStream;
 // import java.util.Objects;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Objects;
 import java.util.logging.*;
 
 public class LoggerModule extends AbstractModule {
@@ -28,6 +30,7 @@ public class LoggerModule extends AbstractModule {
             URL url = this.getClass().getClassLoader().getResource("/");
             assert url != null;
             String filename = url.getPath().substring(1) + "logger.log" ;
+            System.out.println(filename);
             fileHandler = new FileHandler(filename, 50000, 1, true);
             fileHandler.setEncoding( "UTF-8" ) ;
             fileHandler.setLevel( Level.WARNING ) ;
