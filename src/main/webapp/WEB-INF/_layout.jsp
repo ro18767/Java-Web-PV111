@@ -33,6 +33,7 @@
                 <li><a href="?logout"><i class="material-icons">logout</i></a></li>
             <% } %>
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
+            <li><a href="<%=contextPath%>/privacy">Privacy</a></li>
         </ul>
     </div>
 </nav>

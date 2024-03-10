@@ -22,5 +22,6 @@ public class RouterModule extends ServletModule {
         serve("/ioc"   ).with( IocServlet.class     ) ;
         serve("/news").with( NewsServlet.class    ) ;
         serve("/signup").with( SignupServlet.class  ) ;
+        serve("/privacy").with( PrivacyServlet.class  ) ;
     }
 }
