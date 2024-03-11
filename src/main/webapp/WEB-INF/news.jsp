@@ -47,7 +47,7 @@
                     <input type="file" id="news-file">
                 </div>
                 <div class="file-path-wrapper">
-                    <input id="news-file-path" class="file-path validate" type="text">
+                    <input id="news-file-path" class="file-path validate" type="text" readonly>
                 </div>
             </div>
             <img style="width: 100%" id="news-image-preview" src="<%=contextPath%>/upload/news/no-image.jpg" alt="img" />

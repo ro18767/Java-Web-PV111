@@ -1,11 +1,11 @@
 <%@ page import="step.learning.entity.User" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
-    String pageBody = (String) request.getAttribute( "page-body" ) ;
-    if( pageBody == null ) {
-        pageBody = "home.jsp" ;   // default page
+    String pageBody = (String) request.getAttribute("page-body");
+    if (pageBody == null) {
+        pageBody = "home.jsp";   // default page
     }
-    String contextPath = request.getContextPath() ;
+    String contextPath = request.getContextPath();
     User user = (User) request.getAttribute("auth-user");
 %>
 <!doctype html>
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <link rel="stylesheet" href="<%=contextPath%>/css/site.css" />
+    <link rel="stylesheet" href="<%=contextPath%>/css/site.css"/>
     <title>Java web</title>
 </head>
 <body style="display: flex; flex-direction: column; justify-content: space-between; min-height: 100vh">
@@ -27,10 +27,17 @@
             <li><a href="<%=contextPath%>/ioc"><i class="material-icons">sync</i>IoC</a></li>
             <li><a href="<%=contextPath%>/news">Новини</a></li>
             <li><a href="#">JavaScript</a></li>
-            <% if(user == null) { %>
-                <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
+            <% if (user == null) { %>
+            <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
             <% } else { %>
-                <li><a href="?logout"><i class="material-icons">logout</i></a></li>
+            <%
+                String avatarSrc = user.getAvatar().isEmpty() ? "/upload/avatar/no-avatar.png" : "/upload/avatar/" + user.getAvatar();
+            %>
+            <li>
+                <a href="#"><img src="<%=contextPath%><%=avatarSrc%>" style="width: 64px;height: 64px;object-fit: contain" alt="avatar"/></a>
+
+            </li>
+            <li><a href="?logout"><i class="material-icons">logout</i></a></li>
             <% } %>
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
             <li><a href="<%=contextPath%>/privacy">Privacy</a></li>
@@ -38,7 +45,7 @@
     </div>
 </nav>
 <div class="container">
-    <jsp:include page="<%= pageBody %>" />
+    <jsp:include page="<%= pageBody %>"/>
 </div>
 <div style="flex: 1 1 auto"></div>
 <footer class="page-footer indigo">
@@ -46,7 +53,8 @@
         <div class="row">
             <div class="col l6 s12">
                 <h5 class="white-text">Footer Content</h5>
-                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+                <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer
+                    content.</p>
             </div>
             <div class="col l4 offset-l2 s12">
                 <h5 class="white-text">Links</h5>
@@ -74,12 +82,12 @@
         <div class="row">
             <div class="input-field col s11">
                 <i class="material-icons prefix">mail</i>
-                <input  id="auth-email" type="email">
+                <input id="auth-email" type="email">
                 <label for="auth-email">E-mail</label>
             </div>
             <div class="input-field col s11">
                 <i class="material-icons prefix">lock</i>
-                <input  id="auth-password" type="password">
+                <input id="auth-password" type="password">
                 <label for="auth-password">Пароль</label>
             </div>
         </div>
@@ -92,8 +100,8 @@
         </div>
     </div>
 </div>
-    <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="<%=contextPath%>/js/site.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="<%=contextPath%>/js/site.js"></script>
 </body>
 </html>
