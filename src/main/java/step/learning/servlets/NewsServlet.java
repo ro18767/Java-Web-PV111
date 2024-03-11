@@ -42,11 +42,25 @@ public class NewsServlet  extends HttpServlet {
             newsDao.installTable()
                 ? "Success"
                 : "Error" ) ;
-        req.setAttribute( "news", newsDao.getAll() ) ;
-        req.setAttribute( "page-body", "news.jsp" ) ;
-        req.getRequestDispatcher( "/WEB-INF/_layout.jsp" ).forward(req, resp);
+        String pathInfo = req.getPathInfo();
+        if( "/".equals(pathInfo) ) {   // All news page
+            req.setAttribute("news", newsDao.getAll());
+            req.setAttribute("page-body", "news.jsp");
+        }
+        else {   // Single news page
+            News news = newsDao.getById( pathInfo.substring(1) ) ;
+            if( news != null ) {
+                req.setAttribute("news_detail", news);
+            }
+            req.setAttribute("page-body", "news_detail.jsp");
+        }
+
+        req.getRequestDispatcher( "../WEB-INF/_layout.jsp" ).forward(req, resp);
     }
-/*
+/*                    getContextPath()      getServletPath()    getPathInfo()
+/JavaWeb111/news/       /JavaWeb111             /news                /
+/JavaWeb111/news/123    /JavaWeb111             /news                /123
+
 Д.З. Розширити таблицю News, додати посилання на автора (користувача)
 який її опублікував. Реалізувати передачу ID авторизованого
 користувача до бекенду, пересвідчитись у тому, що ці дані потрапляють

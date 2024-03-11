@@ -5,6 +5,7 @@
     if( pageBody == null ) {
         pageBody = "home.jsp" ;   // default page
     }
+    pageBody = "/WEB-INF/" + pageBody;
     String contextPath = request.getContextPath() ;
     User user = (User) request.getAttribute("auth-user");
 %>
@@ -25,7 +26,7 @@
         <a href="#" class="brand-logo left">Logo</a>
         <ul id="nav-mobile" class="right ">
             <li><a href="<%=contextPath%>/ioc"><i class="material-icons">sync</i>IoC</a></li>
-            <li><a href="<%=contextPath%>/news">Новини</a></li>
+            <li><a href="<%=contextPath%>/news/">Новини</a></li>
             <li><a href="#">JavaScript</a></li>
             <% if(user == null) { %>
                 <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>

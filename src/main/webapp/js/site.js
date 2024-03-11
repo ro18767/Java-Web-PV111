@@ -85,7 +85,7 @@ function newsSubmitClick() {   // hoisting - "підняття коду"
         formData.append("news-text", text);
         formData.append("news-file", newsFile.files[0]);
         const appContext = window.location.pathname.split('/')[1] ;
-        fetch(`/${appContext}/news`,{
+        fetch(`/${appContext}/news/`,{
             method: 'POST',
             body: formData
         }).then(r => r.json()).then(j => {

@@ -21,6 +21,18 @@ public class NewsDao {
         this.dbService = dbService;
         this.logger = logger;
     }
+    public News getById( String id ) {
+        String sql = "SELECT * FROM News WHERE id=?" ;
+        try( PreparedStatement prep = dbService.getConnection().prepareStatement(sql) ) {
+            prep.setString(1, id);
+            ResultSet res = prep.executeQuery();
+            return res.next() ? News.fromResultSet(res) : null ;
+        }
+        catch( SQLException ex ) {
+            logger.log( Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return null ;
+    }
     public List<News> getAll() {
         List<News> ret = new ArrayList<>();
         String sql = "SELECT * FROM News" ;

@@ -27,7 +27,7 @@
                 </small>
             </div>
             <div class="card-action">
-                <a href="/<%=contextPath%>/news/<%=n.getId()%>">читати детальніше...</a>
+                <a href="<%=contextPath%>/news/<%=n.getId()%>">читати детальніше...</a>
             </div>
         </div>
     </div>
