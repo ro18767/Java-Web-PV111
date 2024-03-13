@@ -17,10 +17,11 @@ public class RouterModule extends ServletModule {
         filterRegex("^/(?!css/.+|js/.+|img/.+|upload/.+).*$").through( DbFilter.class );
         filterRegex("^/(?!css/.+|js/.+|img/.+|upload/.+).*$").through( AuthFilter.class );
 
-        serve("/"      ).with( HomeServlet.class    ) ;
-        serve("/auth"  ).with( AuthServlet.class    ) ;
-        serve("/ioc"   ).with( IocServlet.class     ) ;
-        serve("/news/*").with( NewsServlet.class    ) ;
-        serve("/signup").with( SignupServlet.class  ) ;
+        serve("/"         ).with( HomeServlet.class    ) ;
+        serve("/auth"     ).with( AuthServlet.class    ) ;
+        serve("/ioc"      ).with( IocServlet.class     ) ;
+        serve("/news/*"   ).with( NewsServlet.class    ) ;
+        serve("/profile/*").with( ProfileServlet.class ) ;
+        serve("/signup"   ).with( SignupServlet.class  ) ;
     }
 }

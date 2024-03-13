@@ -31,6 +31,9 @@
             <% if(user == null) { %>
                 <li><a href="#modal-auth" class="modal-trigger"><i class="material-icons">key</i></a></li>
             <% } else { %>
+                <li><a href="<%=contextPath%>/profile/<%=user.getId()%>" style="vertical-align: middle;"><img alt="avatar"
+                        src="<%=contextPath%>/upload/avatar/<%=user.getAvatar()%>"
+                        style="max-height: 40px;border-radius: 50%"/></a></li>
                 <li><a href="?logout"><i class="material-icons">logout</i></a></li>
             <% } %>
             <li><a href="<%=contextPath%>/signup"><i class="material-icons">person_add</i></a></li>
