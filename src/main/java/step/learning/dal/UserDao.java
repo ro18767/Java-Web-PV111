@@ -24,6 +24,29 @@ public class UserDao {
          this.logger = logger;
     }
 
+    public User getUserById( String id ) {
+        /*
+        * Д.З. Створити метод UserDao::getUserById
+        * Перевірити його працездатність шляхом переходу на
+        * сторінки профілів різних користувачів (як автентифікованого, так і ні)
+        *
+        * Узгодження з попереднім ДЗ - при виводі автора новини додати посилання
+        * на його профіль */
+        return null ;
+    }
+    private User includeRoles(User user) {
+        String sql = String.format(
+                "SELECT * FROM User_Roles ur JOIN Roles r ON ur.role_id = r.id" +
+                        " WHERE ur.user_id='%s' ",
+                user.getId() ) ;
+        try(Statement statement = dbService.getConnection().createStatement()) {
+            user.includeRoles( statement.executeQuery( sql ) ) ;
+        }
+        catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return user;
+    }
     public User getUserByCredentials(String email, String password) {
         String sql = "SELECT * FROM Users u WHERE u.email=?" ;
         try( PreparedStatement prep = dbService.getConnection().prepareStatement( sql ) ) {
@@ -33,7 +56,7 @@ public class UserDao {
                 String salt = resultSet.getString("salt") ;
                 String dk = resultSet.getString("dk") ;
                 if( kdfService.dk(password, salt).equals( dk ) ) {
-                    return new User( resultSet ) ;
+                    return includeRoles( new User( resultSet ) ) ;
                 }
             }
         }
