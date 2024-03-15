@@ -16,7 +16,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const newsImgFileInput = document.getElementById("news-file");
     if(newsImgFileInput) newsImgFileInput.onchange = newsImgChange;
+
+    for(let a of document.querySelectorAll("[data-news-id]")) {
+        a.addEventListener('click', deleteNewsClick);
+    }
 });
+function deleteNewsClick(e) {
+    const newsId = e.target.closest("[data-news-id]").getAttribute("data-news-id");
+    if(!newsId) {
+        alert("Empty news id");
+        return;
+    }
+    const appContext = window.location.pathname.split('/')[1] ;
+    fetch(`/${appContext}/news/?id=${newsId}`, {
+        method: 'DELETE'
+    }).then(r => r.json()).then(console.log);
+    // console.log(newsId);
+}
 function newsImgChange(e) {
     const [file] = e.target.files;
     if(file) {

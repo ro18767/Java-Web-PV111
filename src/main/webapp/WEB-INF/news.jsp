@@ -2,6 +2,7 @@
 <%@ page import="step.learning.entity.News" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.util.Objects" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
     String contextPath = request.getContextPath() ;
@@ -13,10 +14,11 @@
 <h1>Новини</h1>
 
 <% for(News n : news) { %>
-<div class="col s12 m7">
+<div class="col s12 m7" style="opacity: <%= n.getDeleteDt() == null ? 1 : .5 %>" >
     <div class="card horizontal">
         <div class="card-image" style="flex: 1; place-self: center;">
-            <img src="<%=contextPath%>/upload/news/<%=n.getImageUrl()%>" alt="img" />
+            <img src="<%=contextPath%>/upload/news/<%=n.getImageUrl()%>" alt="img"
+            style="max-height: 25vh; margin: auto"/>
         </div>
         <div class="card-stacked" style="flex: 3">
             <div class="card-content">
@@ -27,6 +29,12 @@
                 </small>
             </div>
             <div class="card-action">
+                <% if( Objects.equals( request.getAttribute("can-delete"), true ) ) {
+                    if(n.getDeleteDt() == null) { %>
+                        <a href="#" class="right" data-news-id="<%=n.getId()%>"><i class="material-icons prefix">delete_forever</i></a>
+                    <% } else { %>
+                        <a href="#" class="right" data-news-restore-id="<%=n.getId()%>"><i class="material-icons prefix">restore_from_trash</i></a>
+                <% } } %>
                 <a href="<%=contextPath%>/news/<%=n.getId()%>">читати детальніше...</a>
             </div>
         </div>
@@ -34,7 +42,8 @@
 </div>
 <% } %>
 
-<% if( user != null ) { %>
+<% if( user != null ) {
+    if( Objects.equals( request.getAttribute("can-create"), true ) ) { %>
 <p>
     Контроль таблиці: <%= request.getAttribute( "create-status" ) %>
 </p>
@@ -80,4 +89,7 @@
 
     <div class="row"><button id="news-submit" class="btn indigo right">Публікувати</button> </div>
 </div>
-<% } %>
+<% } else { %>
+    <div class="card-panel pink white-text center">У вас немає прав на створення новин</div>
+<% }
+} %>

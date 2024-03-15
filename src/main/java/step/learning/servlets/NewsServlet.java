@@ -7,6 +7,7 @@ import com.google.inject.Singleton;
 import org.apache.commons.fileupload.FileItem;
 import step.learning.dal.NewsDao;
 import step.learning.entity.News;
+import step.learning.entity.User;
 import step.learning.services.form_parse.FormParseResult;
 import step.learning.services.form_parse.FormParseService;
 
@@ -38,13 +39,23 @@ public class NewsServlet  extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        boolean canDelete = false ;
         req.setAttribute( "create-status",
             newsDao.installTable()
                 ? "Success"
                 : "Error" ) ;
+        User user = (User) req.getAttribute("auth-user");
+        if( user != null ) {
+            req.setAttribute("can-create",
+                    user.getRoles().stream().anyMatch(role -> role.getCanCreate() == 1));
+            req.setAttribute("can-update",
+                    user.getRoles().stream().anyMatch(role -> role.getCanUpdate() == 1));
+            canDelete = user.getRoles().stream().anyMatch(role -> role.getCanDelete() == 1);
+            req.setAttribute("can-delete", canDelete);
+        }
         String pathInfo = req.getPathInfo();
         if( "/".equals(pathInfo) ) {   // All news page
-            req.setAttribute("news", newsDao.getAll());
+            req.setAttribute("news", newsDao.getAll(canDelete) );
             req.setAttribute("page-body", "news.jsp");
         }
         else {   // Single news page
@@ -148,6 +159,21 @@ public class NewsServlet  extends HttpServlet {
 
         if( newsDao.addNews(news) ) {
             sendRest(resp, "success", "News created");
+        }
+        else {
+            sendRest(resp, "error", "Internal error.");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String newsId = req.getParameter("id");
+        if( newsId == null || newsId.isEmpty() ) {
+            sendRest(resp, "error", "Missing required data: 'id'");
+            return;
+        }
+        if( newsDao.deleteNews(newsId) ) {
+            sendRest(resp, "success", "News deleted");
         }
         else {
             sendRest(resp, "error", "Internal error.");
