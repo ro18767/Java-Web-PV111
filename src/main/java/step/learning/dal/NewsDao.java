@@ -85,6 +85,19 @@ public class NewsDao {
         return false ;
     }
 
+    public boolean restoreNews(String id) {
+        String sql = "UPDATE News SET deleted_dt = NULL WHERE id=?";
+        try( PreparedStatement prep = dbService.getConnection().prepareStatement(sql) ) {
+            prep.setString(1, id);
+            prep.executeUpdate();
+            return true ;
+        }
+        catch( SQLException ex ) {
+            logger.log( Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return false ;
+    }
+
     public boolean installTable() {
         String sql = "CREATE TABLE  IF NOT EXISTS  News(" +
                 "id         CHAR(36)     PRIMARY KEY DEFAULT( UUID() )," +
