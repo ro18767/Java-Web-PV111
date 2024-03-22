@@ -14,6 +14,8 @@ public class Comment {
     private Date createDt ;
     private Date deleteDt ;
 
+    private User user;
+
     public Comment() {
     }
 
@@ -30,6 +32,13 @@ public class Comment {
         if( timestamp != null ) {
             this.setDeleteDt( new Date( timestamp.getTime() ) );
         }
+        try {
+            user = new User( resultSet ) ;
+        } catch (Exception ignore) { }
+    }
+
+    public User getUser() {
+        return user;
     }
 
     public UUID getId() {
