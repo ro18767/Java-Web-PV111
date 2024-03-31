@@ -3,6 +3,7 @@ package step.learning.ioc;
 import com.google.inject.servlet.ServletModule;
 import step.learning.filters.AuthFilter;
 import step.learning.filters.DbFilter;
+import step.learning.filters.EncodingFilter;
 import step.learning.servlets.*;
 
 public class RouterModule extends ServletModule {
@@ -14,11 +15,13 @@ public class RouterModule extends ServletModule {
         (до CSS, JS тощо). Перевірка підключення БД для них непотрібна
         і навіть шкідлива (при збоях підключення ресурси також недоступні)
          */
+        filterRegex("^/(?!css/.+|js/.+|img/.+|upload/.+|resources/.+).*$").through(EncodingFilter.class);
         filterRegex("^/(?!css/.+|js/.+|img/.+|upload/.+).*$").through( DbFilter.class );
         filterRegex("^/(?!css/.+|js/.+|img/.+|upload/.+).*$").through( AuthFilter.class );
 
         serve("/"         ).with( HomeServlet.class    ) ;
         serve("/auth"     ).with( AuthServlet.class    ) ;
+        serve("/comment"  ).with( CommentServlet.class ) ;
         serve("/ioc"      ).with( IocServlet.class     ) ;
         serve("/news/*"   ).with( NewsServlet.class    ) ;
         serve("/profile/*").with( ProfileServlet.class ) ;

@@ -5,8 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.apache.commons.fileupload.FileItem;
+import step.learning.dal.CommentDao;
 import step.learning.dal.NewsDao;
+import step.learning.entity.Comment;
 import step.learning.entity.News;
+import step.learning.entity.User;
 import step.learning.services.form_parse.FormParseResult;
 import step.learning.services.form_parse.FormParseService;
 
@@ -22,35 +25,59 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @Singleton
 public class NewsServlet  extends HttpServlet {
     private final NewsDao newsDao ;
+    private final CommentDao commentDao;
     private final FormParseService formParseService;
     private final Logger logger ;
 
     @Inject
-    public NewsServlet(NewsDao newsDao, FormParseService formParseService, Logger logger) {
+    public NewsServlet(NewsDao newsDao, CommentDao commentDao, FormParseService formParseService, Logger logger) {
         this.newsDao = newsDao;
+        this.commentDao = commentDao;
         this.formParseService = formParseService;
         this.logger = logger;
     }
 
     @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // цей метод викликається до того, як відбудеться розгалуження з викликом doXxxx методів
+        switch(req.getMethod()) {
+            case "RESTORE": doRestore(req, resp); break;
+            default: super.service(req, resp);
+        }
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        boolean canDelete = false ;
         req.setAttribute( "create-status",
             newsDao.installTable()
                 ? "Success"
                 : "Error" ) ;
+        User user = (User) req.getAttribute("auth-user");
+        if( user != null ) {
+            req.setAttribute("can-create",
+                    user.getRoles().stream().anyMatch(role -> role.getCanCreate() == 1));
+            req.setAttribute("can-update",
+                    user.getRoles().stream().anyMatch(role -> role.getCanUpdate() == 1));
+            canDelete = user.getRoles().stream().anyMatch(role -> role.getCanDelete() == 1);
+            req.setAttribute("can-delete", canDelete);
+        }
         String pathInfo = req.getPathInfo();
         if( "/".equals(pathInfo) ) {   // All news page
-            req.setAttribute("news", newsDao.getAll());
+            req.setAttribute("news", newsDao.getAll(canDelete) );
             req.setAttribute("page-body", "news.jsp");
         }
         else {   // Single news page
             News news = newsDao.getById( pathInfo.substring(1) ) ;
             if( news != null ) {
-                req.setAttribute("news_detail", news);
+                req.setAttribute( "news_detail", news );
+                req.setAttribute( "news_comments",
+                        commentDao.getNewsComments( news ).toArray( new Comment[0] ) );
             }
             req.setAttribute("page-body", "news_detail.jsp");
         }
@@ -148,6 +175,61 @@ public class NewsServlet  extends HttpServlet {
 
         if( newsDao.addNews(news) ) {
             sendRest(resp, "success", "News created");
+        }
+        else {
+            sendRest(resp, "error", "Internal error.");
+        }
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String newsId = req.getParameter("id");
+        if( newsId == null || newsId.isEmpty() ) {
+            sendRest(resp, "error", "Missing required data: 'id'");
+            return;
+        }
+        if( newsDao.deleteNews(newsId) ) {
+            sendRest(resp, "success", "News deleted");
+        }
+        else {
+            sendRest(resp, "error", "Internal error.");
+        }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+        resp.setCharacterEncoding("UTF-8");
+        FormParseResult formParseResult ;
+        try {
+            formParseResult = formParseService.parse(req) ;
+        }
+        catch (ParseException ex) {
+            logger.log(Level.SEVERE, ex.getMessage());
+            sendRest(resp, "error", "Data composition error");
+            return;
+        }
+        Map<String,String> fields = formParseResult.getFields() ;
+        /* Д.З. Реалізувати валідацію даних, що надходять для зміни (UPDATE)
+        у метод PUT. Використати аналогічні вимоги, як при додаванні новини,
+        але мати на увазі, що не всі поля повинні бути при оновленні
+        (перевіряємо тільки ті, що приходять. Обов'язковий тільки id)
+        ** Але хоча б одне поле (окрім id) має бути
+        * */
+        sendRest(resp,
+                String.join(",", fields.keySet()),
+                String.join(",", fields.values())
+        );
+    }
+
+    protected void doRestore(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String newsId = req.getParameter("id");
+        if( newsId == null || newsId.isEmpty() ) {
+            sendRest(resp, "error", "Missing required data: 'id'");
+            return;
+        }
+        if( newsDao.restoreNews(newsId) ) {
+            sendRest(resp, "success", "News restored");
         }
         else {
             sendRest(resp, "error", "Internal error.");

@@ -33,9 +33,16 @@ public class NewsDao {
         }
         return null ;
     }
+
     public List<News> getAll() {
+        return getAll(false);
+    }
+    public List<News> getAll(boolean withDeleted) {
         List<News> ret = new ArrayList<>();
         String sql = "SELECT * FROM News" ;
+        if( ! withDeleted) {
+            sql += " WHERE deleted_dt IS NULL" ;
+        }
         try( Statement statement = dbService.getConnection().createStatement() ) {
             ResultSet res = statement.executeQuery( sql ) ;
             while( res.next() ) {
@@ -56,6 +63,32 @@ public class NewsDao {
             prep.setString(3, news.getText());
             prep.setString(4, news.getImageUrl());
             prep.setTimestamp(5, new Timestamp(news.getCreateDt().getTime()) );
+            prep.executeUpdate();
+            return true ;
+        }
+        catch( SQLException ex ) {
+            logger.log( Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return false ;
+    }
+
+    public boolean deleteNews(String id) {
+        String sql = "UPDATE News SET deleted_dt = CURRENT_TIMESTAMP WHERE id=?";
+        try( PreparedStatement prep = dbService.getConnection().prepareStatement(sql) ) {
+            prep.setString(1, id);
+            prep.executeUpdate();
+            return true ;
+        }
+        catch( SQLException ex ) {
+            logger.log( Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return false ;
+    }
+
+    public boolean restoreNews(String id) {
+        String sql = "UPDATE News SET deleted_dt = NULL WHERE id=?";
+        try( PreparedStatement prep = dbService.getConnection().prepareStatement(sql) ) {
+            prep.setString(1, id);
             prep.executeUpdate();
             return true ;
         }
@@ -87,7 +120,11 @@ public class NewsDao {
     }
 }
 /*
-Д.З. Фільтри:
-Додати налаштування для фільтрів, у т.ч. фільтра для зміни кодування,
-з урахуванням того, що на ресурси вони не повинні спрацьовувати.
+Д.З. Авторизація з ролями
+Обмежити доступ до детального перегляду новини, якщо вона видалена.
+- додати параметр "withDeleted" методу NewsDao::getById( withDeleted )
+- контролювати доступ користувача з сервлету і викликати відповідну форму NewsDao::getById
+- змінити представлення детального перегляду новини: за умови, що вона видалена,
+   відображати відмінним стилем або з повідомленням, що вона видалена
+   !тільки користувачів, що мають на це право.
  */
