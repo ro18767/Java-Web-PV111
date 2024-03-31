@@ -18,6 +18,7 @@ public class HashKdfService implements KdfService {
 
     @Override
     public String dk( String password, String salt ) {
-        return hashService.hash(password + salt ) ;
+        String t1 = hashService.hash(password + salt ) ;
+        return hashService.hash( t1 ) ;
     }
 }
