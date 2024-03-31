@@ -54,7 +54,15 @@ function newsCommentClick() {
         body: JSON.stringify({
             newsId, userId, comment
         })
-    }).then(r => r.json()).then(console.log);
+    }).then(r => r.json()).then( j => {
+        console.log(j);
+        if( j.status !== "success" ) {
+            alert("Помилка сервера");
+        }
+        else {
+            window.location.reload();
+        }
+    });
 }
 function restoreNewsClick(e) {
     const newsId = e.target.closest("[data-news-restore-id]").getAttribute("data-news-restore-id");

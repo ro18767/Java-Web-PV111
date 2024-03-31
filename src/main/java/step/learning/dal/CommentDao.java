@@ -26,12 +26,27 @@ public class CommentDao {
         this.logger = logger;
     }
 
+    public boolean addComment(Comment comment) {
+        String sql = "INSERT INTO Comments(id, user_id, news_id, `text`) " +
+                " VALUES( UUID(), ?, ?, ? )";
+        try( PreparedStatement prep = dbService.getConnection().prepareStatement( sql ) ) {
+            prep.setString( 1, comment.getUserId().toString() );
+            prep.setString( 2, comment.getNewsId().toString() );
+            prep.setString( 3, comment.getText() );
+            prep.executeUpdate();
+            return true;
+        }
+        catch( SQLException ex ) {
+            logger.log( Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return false;
+    }
     public List<Comment> getNewsComments(News news) {
         return getNewsComments(news.getId().toString());
     }
     public List<Comment> getNewsComments(String newsId) {
         List<Comment> ret = new ArrayList<>();
-        String sql = "SELECT * FROM Comments WHERE news_id=?";
+        String sql = "SELECT * FROM Comments c JOIN Users u on u.id = c.user_id WHERE news_id=?";
         try(PreparedStatement prep = dbService.getConnection().prepareStatement(sql)) {
             prep.setString(1, newsId);
             ResultSet resultSet = prep.executeQuery();

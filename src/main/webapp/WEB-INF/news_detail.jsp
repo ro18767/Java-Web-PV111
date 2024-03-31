@@ -4,6 +4,10 @@
 <%@ page import="step.learning.entity.Comment" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.text.SimpleDateFormat" %>
+<%@ page import="java.time.LocalDate" %>
+<%@ page import="java.time.OffsetTime" %>
+<%@ page import="java.sql.Date" %>
+<%@ page import="java.time.ZoneId" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%
     String contextPath = request.getContextPath() ;
@@ -16,6 +20,11 @@
 
     boolean canUpdate = // (boolean) request.getAttribute("can-update"); -- (boolean)null -> Exception
             Objects.equals(true, request.getAttribute("can-update"));
+    SimpleDateFormat todayFormat = new SimpleDateFormat("HH:mm:ss");
+    SimpleDateFormat oldFormat = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yy");
+    java.util.Date startOfDay = dateFormat.parse( dateFormat.format(new java.util.Date()) );
+
 %>
 
 <div class="row">
@@ -40,11 +49,16 @@
         </p>
         <% } %>
 
-        <%-- Блок відображення коментарів --%>
-        <% for (Comment comment : comments) { %>
-        <p><%=comment.getText()%>
-        </p>
-        <% } %>
+<%-- Блок відображення коментарів --%>
+<% for( Comment comment : comments ) { %>
+    <p>
+        <%= comment.getCreateDt().before(startOfDay)
+                ? oldFormat.format(comment.getCreateDt())
+                : todayFormat.format(comment.getCreateDt()) %>
+        <%=comment.getUser() == null ? "--" : comment.getUser().getName()%>
+        <%=comment.getText()%>
+    </p>
+<% } %>
 
         <% if (user != null) { %><%-- Блок додавання коментаря --%>
         <div class="row">
@@ -101,3 +115,7 @@
     </div>
 </div>
 <% } %>
+
+Д.З. Прикласти посилання на репозиторій або архів підсумкового проєкту
+(не забувати про скріншоти роботи проєкту)
+Встановити AndroidStudio (https://developer.android.com/studio)
