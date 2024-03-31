@@ -114,19 +114,39 @@ public class NewsServlet  extends HttpServlet {
             sendRest(resp, "error", "Missing required data: 'news-title'");
             return;
         }
+        if( newsTitle.length() < 10 ) {
+            sendRest(resp, "error", "Too short required data: 'news-title'");
+            return;
+        }
         String newsDate = fields.get( "news-date" ) ;
         if( newsDate == null || newsDate.isEmpty() ) {
             sendRest(resp, "error", "Missing required data: 'news-date'");
             return;
         }
+        try {
+            new SimpleDateFormat("yyyy-MM-dd").parse(newsDate);
+        } catch (ParseException ex) {
+            sendRest(resp, "error", "Format error must be 'yyyy-mm-dd': 'news-date'");
+            return;
+        }
+
+
         String newsSpoiler = fields.get( "news-spoiler" ) ;
         if( newsSpoiler == null || newsSpoiler.isEmpty() ) {
             sendRest(resp, "error", "Missing required data: 'news-spoiler'");
             return;
         }
+        if( newsSpoiler.length() < 10 ) {
+            sendRest(resp, "error", "Too short required data: 'news-spoiler'");
+            return;
+        }
         String newsText = fields.get( "news-text" ) ;
         if( newsText == null || newsText.isEmpty() ) {
             sendRest(resp, "error", "Missing required data: 'news-text'");
+            return;
+        }
+        if( newsText.length() < 20 ) {
+            sendRest(resp, "error", "Too short required data: 'news-text'");
             return;
         }
         if( ! formParseResult.getFiles().containsKey("news-file") ) {
