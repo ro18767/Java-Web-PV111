@@ -51,12 +51,13 @@
 
 <%-- Блок відображення коментарів --%>
 <% for( Comment comment : comments ) { %>
-    <p>
+    <p data-comment-id="<%=comment.getId().toString()%>">
         <%= comment.getCreateDt().before(startOfDay)
                 ? oldFormat.format(comment.getCreateDt())
                 : todayFormat.format(comment.getCreateDt()) %>
         <%=comment.getUser() == null ? "--" : comment.getUser().getName()%>
         <%=comment.getText()%>
+
     </p>
 <% } %>
 
@@ -77,7 +78,6 @@
         <%
             System.out.println(contextPath);
             List<News> otherNews = (List<News>) request.getAttribute("other_news");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
         %>
     </div>
 </div>

@@ -9,6 +9,7 @@ import step.learning.services.db.DbService;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,7 @@ import java.util.logging.Logger;
 @Singleton
 public class CommentDao {
     private final DbService dbService;
+
     private final Logger logger;
 
     @Inject

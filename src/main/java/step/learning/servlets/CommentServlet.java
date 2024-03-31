@@ -2,59 +2,93 @@ package step.learning.servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.commons.fileupload.FileItem;
 import step.learning.dal.CommentDao;
+import step.learning.dal.NewsDao;
 import step.learning.entity.Comment;
+import step.learning.entity.News;
+import step.learning.entity.User;
+import step.learning.services.form_parse.FormParseResult;
+import step.learning.services.form_parse.FormParseService;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public class CommentServlet extends HttpServlet {
     private final CommentDao commentDao;
 
+    private final FormParseService formParseService;
+
+    private final Logger logger ;
+
     @Inject
-    public CommentServlet(CommentDao commentDao) {
+    public CommentServlet(CommentDao commentDao, FormParseService formParseService, Logger logger) {
         this.commentDao = commentDao;
+        this.formParseService = formParseService;
+        this.logger = logger;
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reqBody = readStreamToEnd( req.getInputStream() ) ;
-        JsonObject jsonBody = JsonParser.parseString(reqBody).getAsJsonObject();
-        // newsId, userId, comment
-        if( ! jsonBody.has("newsId") ) {
-            sendRest(resp, "error", "Missing required data: 'newsId'");
+
+        resp.setCharacterEncoding("UTF-8");
+
+        User user = (User) req.getAttribute("auth-user");
+
+
+        FormParseResult formParseResult ;
+        try {
+            formParseResult = formParseService.parse(req) ;
+        }
+        catch (ParseException ex) {
+            logger.log(Level.SEVERE, ex.getMessage());
+            sendRest(resp, "error", "Data composition error");
             return;
         }
-        String newsId = jsonBody.get("newsId").getAsString();  // TODO:перевірити на формат UUID
+        Map<String,String> fields = formParseResult.getFields() ;
 
-        if( ! jsonBody.has("userId") ) {
-            sendRest(resp, "error", "Missing required data: 'userId'");
-            return;
-        }
-        String userId = jsonBody.get("userId").getAsString();
-
-        if( ! jsonBody.has("comment") ) {
+        String newsText = fields.get( "comment" ) ;
+        if( newsText == null || newsText.isEmpty() ) {
             sendRest(resp, "error", "Missing required data: 'comment'");
             return;
         }
-        String commentText = jsonBody.get("comment").getAsString();
+
+        String newsIdSting = fields.get( "newsId" ) ;
+
+        if( newsIdSting == null || newsIdSting.isEmpty() ) {
+            sendRest(resp, "error", "Missing required data: 'newsId'");
+            return;
+        }
         Comment comment = new Comment();
-        comment.setNewsId( UUID.fromString(newsId) );
-        comment.setUserId( UUID.fromString(userId) );
-        comment.setText( commentText );
+
+        comment.setNewsId(UUID.fromString(newsIdSting));
+
+        if(user != null) {
+            comment.setUserId(user.getId());
+        }
+
+        comment.setText(newsText);
+        comment.setCreateDt(new Date());
+
         if( commentDao.addComment(comment) ) {
-            sendRest(resp, "success", "Comment added");
+            sendRest(resp, "success", "Comment created");
         }
         else {
             sendRest(resp, "error", "Internal error.");

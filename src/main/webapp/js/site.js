@@ -45,15 +45,14 @@ function newsCommentClick() {
 
     console.log(newsId, userId, comment);
 
+    let fd = new FormData();
+    fd.append('newsId', newsId)
+    fd.append('userId', userId)
+    fd.append('comment', comment)
     const appContext = window.location.pathname.split('/')[1] ;
     fetch(`/${appContext}/comment`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8'
-        },
-        body: JSON.stringify({
-            newsId, userId, comment
-        })
+        body: fd
     }).then(r => r.json()).then( j => {
         console.log(j);
         if( j.status !== "success" ) {
