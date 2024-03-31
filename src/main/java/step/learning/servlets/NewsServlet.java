@@ -79,6 +79,7 @@ public class NewsServlet  extends HttpServlet {
                 req.setAttribute( "news_comments",
                         commentDao.getNewsComments( news ).toArray( new Comment[0] ) );
             }
+            req.setAttribute("other_news", newsDao.getLastNews(3));
             req.setAttribute("page-body", "news_detail.jsp");
         }
 

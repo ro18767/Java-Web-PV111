@@ -55,6 +55,24 @@ public class NewsDao {
         }
         return ret;
     }
+
+    public List<News> getLastNews(int limit) {
+        List<News> ret = new ArrayList<>();
+        String sql = "SELECT * FROM News " +
+                "WHERE deleted_dt IS NULL " +
+                "ORDER BY created_dt DESC " +
+                "LIMIT " + limit;
+        try( Statement statement = dbService.getConnection().createStatement() ) {
+            ResultSet res = statement.executeQuery( sql ) ;
+            while( res.next() ) {
+                ret.add( News.fromResultSet(res) ) ;
+            }
+        }
+        catch( SQLException ex ) {
+            logger.log( Level.SEVERE, ex.getMessage() + " -- " + sql );
+        }
+        return ret;
+    }
     public boolean addNews(News news) {
         String sql = "INSERT INTO News(id, author_user_id, title, spoiler, `text`, image_url, created_dt)" +
                 " VALUES( UUID(), ?, ?, ?, ?, ?, ?)";
