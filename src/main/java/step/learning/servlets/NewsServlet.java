@@ -99,6 +99,9 @@ public class NewsServlet  extends HttpServlet {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
 
+        User user = (User) req.getAttribute("auth-user");
+
+
         FormParseResult formParseResult ;
         try {
             formParseResult = formParseService.parse(req) ;
@@ -182,6 +185,10 @@ public class NewsServlet  extends HttpServlet {
         News news = new News();
         news.setTitle(newsTitle);
         news.setSpoiler(newsSpoiler);
+
+        if(user != null) {
+            news.setAuthorUserId(user.getId());
+        }
 
         try {
             news.setCreateDt(new SimpleDateFormat("yyyy-MM-dd").parse(newsDate));

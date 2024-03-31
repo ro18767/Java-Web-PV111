@@ -10,6 +10,7 @@ public class News {
     private UUID id ;
     private String title ;
     private String spoiler ;
+    private UUID authorUserId ;
     private String text ;
     private String imageUrl ;
     private Date createDt ;
@@ -20,6 +21,17 @@ public class News {
         ret.setId( UUID.fromString( resultSet.getString("id") ) );
         ret.setTitle( resultSet.getString( "title" ) ) ;
         ret.setSpoiler( resultSet.getString( "spoiler" ) ) ;
+
+        String StringAuthorUserId = resultSet.getString( "author_user_id" );
+
+        if(StringAuthorUserId != null) {
+            try {
+                ret.setAuthorUserId(UUID.fromString(StringAuthorUserId));
+            } catch (IllegalArgumentException ex) {
+
+            }
+        }
+
         ret.setText( resultSet.getString( "text" ) ) ;
         ret.setImageUrl( resultSet.getString( "image_url" ) ) ;
         Timestamp timestamp = resultSet.getTimestamp( "created_dt" ) ;
@@ -54,6 +66,14 @@ public class News {
 
     public void setSpoiler(String spoiler) {
         this.spoiler = spoiler;
+    }
+
+    public UUID getAuthorUserId() {
+        return authorUserId;
+    }
+
+    public void setAuthorUserId(UUID authorUserId) {
+        this.authorUserId = authorUserId;
     }
 
     public String getText() {

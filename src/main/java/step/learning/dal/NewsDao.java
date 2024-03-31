@@ -8,6 +8,7 @@ import step.learning.services.db.DbService;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -55,14 +56,21 @@ public class NewsDao {
         return ret;
     }
     public boolean addNews(News news) {
-        String sql = "INSERT INTO News(id, title, spoiler, `text`, image_url, created_dt)" +
-                " VALUES( UUID(), ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO News(id, author_user_id, title, spoiler, `text`, image_url, created_dt)" +
+                " VALUES( UUID(), ?, ?, ?, ?, ?, ?)";
         try( PreparedStatement prep = dbService.getConnection().prepareStatement(sql) ) {
-            prep.setString(1, news.getTitle());
-            prep.setString(2, news.getSpoiler());
-            prep.setString(3, news.getText());
-            prep.setString(4, news.getImageUrl());
-            prep.setTimestamp(5, new Timestamp(news.getCreateDt().getTime()) );
+            UUID authorUserId = news.getAuthorUserId();
+            if(authorUserId == null) {
+                prep.setNull(1, java.sql.Types.NULL);
+            } else {
+                prep.setString(1, authorUserId.toString());
+            }
+
+            prep.setString(2, news.getTitle());
+            prep.setString(3, news.getSpoiler());
+            prep.setString(4, news.getText());
+            prep.setString(5, news.getImageUrl());
+            prep.setTimestamp(6, new Timestamp(news.getCreateDt().getTime()) );
             prep.executeUpdate();
             return true ;
         }
@@ -101,6 +109,7 @@ public class NewsDao {
     public boolean installTable() {
         String sql = "CREATE TABLE  IF NOT EXISTS  News(" +
                 "id         CHAR(36)     PRIMARY KEY DEFAULT( UUID() )," +
+                "author_user_id      CHAR(256) NULL," +
                 "title      VARCHAR(256) NOT NULL," +
                 "spoiler    VARCHAR(512) NOT NULL," +
                 "text       TEXT         NOT NULL," +
