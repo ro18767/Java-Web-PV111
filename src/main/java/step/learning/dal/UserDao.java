@@ -2,6 +2,7 @@ package step.learning.dal;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import step.learning.entity.News;
 import step.learning.entity.User;
 import step.learning.services.db.DbService;
 import step.learning.services.kdf.KdfService;
@@ -24,15 +25,28 @@ public class UserDao {
          this.logger = logger;
     }
 
-    public User getUserById( String id ) {
+    public User getUserById(String id) {
         /*
-        * Д.З. Створити метод UserDao::getUserById
-        * Перевірити його працездатність шляхом переходу на
-        * сторінки профілів різних користувачів (як автентифікованого, так і ні)
-        *
-        * Узгодження з попереднім ДЗ - при виводі автора новини додати посилання
-        * на його профіль */
-        return null ;
+         * Д.З. Створити метод UserDao::getUserById
+         * Перевірити його працездатність шляхом переходу на
+         * сторінки профілів різних користувачів (як автентифікованого, так і ні)
+         *
+         * Узгодження з попереднім ДЗ - при виводі автора новини додати посилання
+         * на його профіль */
+        String sql = "SELECT * FROM Users u WHERE u.id=?";
+        try (PreparedStatement prep = dbService.getConnection().prepareStatement(sql)) {
+            prep.setString(1, id);
+            ResultSet res = prep.executeQuery();
+            if(res.next()) {
+                User user = new User(res);
+                includeRoles(user);
+                return user;
+            }
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, ex.getMessage() + " -- " + sql);
+        }
+
+        return null;
     }
     private User includeRoles(User user) {
         String sql = String.format(
